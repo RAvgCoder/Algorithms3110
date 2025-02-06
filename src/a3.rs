@@ -23,25 +23,29 @@ impl DominatorStack {
     /// 1. The hotels are sorted by distance (Asc)
     /// 2. The hotels are sorted by price (Desc)
     /// 3. If two hotels have the same distance, the one with the lower price is kept
-    unsafe fn push(&mut self, hotel: Hotel) {
-        assert!(self.0.capacity() > self.0.len());
-        if let Some(prev) = self.0.last_mut() {
-            // Triggers only if there is at least one element
-            if prev.distance != hotel.distance {
-                // Not the same distance
-                if prev.price > hotel.price {
-                    // Price is lower so we can add this hotel
-                    self.0.push(hotel);
+    fn push(&mut self, hotel: Hotel) -> Result<(), ()> {
+        if self.0.capacity() > self.0.len() {
+            if let Some(prev) = self.0.last_mut() {
+                // Triggers only if there is at least one element
+                if prev.distance != hotel.distance {
+                    // Not the same distance
+                    if prev.price > hotel.price {
+                        // Price is lower so we can add this hotel
+                        self.0.push(hotel);
+                    }
+                    // else: Price is higher Do nothing
+                } else if prev.price > hotel.price {
+                    // Same distance but the price is lower
+                    // replace the previous hotel
+                    *prev = hotel;
                 }
-                // else: Price is higher Do nothing
-            } else if prev.price > hotel.price {
-                // Same distance but the price is lower
-                // replace the previous hotel
-                *prev = hotel;
+            } else {
+                // No elements in the vector
+                self.0.push(hotel);
             }
+            Ok(())
         } else {
-            // No elements in the vector
-            self.0.push(hotel);
+            Err(())
         }
     }
 
@@ -73,16 +77,16 @@ pub fn find_candidate_hotels(hotels: &[Hotel]) -> Vec<Hotel> {
             let l = hotel_l.distance;
             let r = hotel_r.distance;
             if l < r {
-                unsafe { dominator_stack.push(*hotel_l) };
+                dominator_stack.push(*hotel_l).unwrap();
                 left_iter.next();
             } else {
-                unsafe { dominator_stack.push(*hotel_r) };
+                dominator_stack.push(*hotel_r).unwrap();
                 right_iter.next();
             }
         }
 
-        left_iter.for_each(|hotel| unsafe { dominator_stack.push(hotel) });
-        right_iter.for_each(|hotel| unsafe { dominator_stack.push(hotel) });
+        left_iter.for_each(|hotel| dominator_stack.push(hotel).unwrap());
+        right_iter.for_each(|hotel| dominator_stack.push(hotel).unwrap());
 
         dominator_stack.into_inner()
     }
