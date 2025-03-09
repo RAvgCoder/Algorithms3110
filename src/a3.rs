@@ -54,7 +54,8 @@ impl DominatorStack {
     }
 }
 
-pub fn find_candidate_hotels(hotels: &[Hotel]) -> Vec<Hotel> {
+#[allow(dead_code)]
+fn find_candidate_hotels(hotels: &[Hotel]) -> Vec<Hotel> {
     if hotels.len() == 0 {
         vec![]
     } else if hotels.len() == 1 {
@@ -92,6 +93,7 @@ pub fn find_candidate_hotels(hotels: &[Hotel]) -> Vec<Hotel> {
     }
 }
 
+#[allow(dead_code)]
 fn binary_exponentiation(base: i32, exp: i32) -> i32 {
     if exp == 1 {
         base
