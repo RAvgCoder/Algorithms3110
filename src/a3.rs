@@ -56,7 +56,7 @@ impl DominatorStack {
 
 #[allow(dead_code)]
 fn find_candidate_hotels(hotels: &[Hotel]) -> Vec<Hotel> {
-    if hotels.len() == 0 {
+    if hotels.is_empty() {
         vec![]
     } else if hotels.len() == 1 {
         vec![hotels[0]]

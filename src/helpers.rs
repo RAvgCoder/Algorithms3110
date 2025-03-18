@@ -66,5 +66,5 @@
 #[inline(always)]
 #[allow(dead_code)]
 pub unsafe fn assume_sufficient_capacity<T>(list: &Vec<T>) {
-    core::hint::assert_unchecked(list.capacity() > list.len())
+    core::hint::assert_unchecked(list.capacity() > list.len());
 }

@@ -15,7 +15,7 @@ fn n_log_n(arr: &[i32]) -> IndexPair {
     prefix.sort_unstable(); // O(n * log(n))
 
     // O(n)
-    prefix.windows(2).into_iter().for_each(|window| {
+    prefix.windows(2).for_each(|window| {
         if let [(a, ai), (b, bi)] = window {
             let mut ai = *ai;
             let mut bi = *bi;
@@ -55,11 +55,11 @@ fn n_square(arr: &[i32]) -> IndexPair {
         for (j, e1) in arr[i..].iter().enumerate() {
             let j = i + j;
             sum += e1;
-            let min = min_sum.min(sum.abs() as u32);
+            let min = min_sum.min(sum.unsigned_abs());
             if min_sum != min {
                 min_sum = min;
                 min_sub_range = (i, j);
-            } else if min_sum == sum.abs() as u32 {
+            } else if min_sum == sum.unsigned_abs() {
                 // Update the min sub range if the current sub range is smaller
                 if (j as i32 - i as i32).abs()
                     < (min_sub_range.1 as i32 - min_sub_range.0 as i32).abs()

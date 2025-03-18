@@ -89,12 +89,12 @@ impl Assignment5 {
     ) -> (&'i Intervals, &'l [&'i Intervals]) {
         for (idx, interval) in intervals.iter().enumerate() {
             if !interval.contains(&n) && *interval.start() > n {
-                return (&intervals[idx - 1], &intervals[idx..]);
+                return (intervals[idx - 1], &intervals[idx..]);
             }
         }
 
         let end_idx = intervals.len() - 1;
-        (&intervals[end_idx], &intervals[end_idx + 1..])
+        (intervals[end_idx], &intervals[end_idx + 1..])
     }
 
     fn filter_ranges_in_numbers<'i>(
@@ -113,7 +113,7 @@ impl Assignment5 {
                 }
             }
 
-            let (farthest_range, interval) = Self::find_farthest_interval(&interval_list, *n);
+            let (farthest_range, interval) = Self::find_farthest_interval(interval_list, *n);
             interval_list = interval;
 
             candidates.push(farthest_range);
