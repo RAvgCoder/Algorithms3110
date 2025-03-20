@@ -28,7 +28,7 @@ struct Cell {
     possible_paths_ops: Vec<Operation>,
 }
 
-type CacheGrid = Vec<Vec<Cell>>;
+type CacheGrid = Box<[Box<[Cell]>]>;
 
 impl Assignment7 {
     /// Given two strings `x` and `y`, compute the metamorphosis number.
@@ -70,7 +70,7 @@ impl Assignment7 {
     }
 
     fn metamorphosis_core(from: &str, to: &str) -> CacheGrid {
-        let mut cache_grid: CacheGrid = vec![vec![Cell::default(); from.len() + 1]; to.len() + 1];
+        let mut cache_grid: CacheGrid = Self::init_grid(from, to);
 
         for (i, row) in cache_grid.iter_mut().rev().enumerate() {
             let cell = row.last_mut().expect("The last column should exist");
@@ -115,6 +115,10 @@ impl Assignment7 {
         cache_grid
     }
 
+    fn init_grid<T: Default + Clone>(from: &str, to: &str) -> Box<[Box<[T]>]> {
+        vec![vec![T::default(); from.len() + 1].into_boxed_slice(); to.len() + 1].into_boxed_slice()
+    }
+
     #[allow(dead_code)]
     pub fn render_metamorphosis_steps(from: &str, to: &str) -> Vec<String> {
         let cache_grid = Self::metamorphosis_core(from, to);
@@ -125,6 +129,8 @@ impl Assignment7 {
             curr_coord: Coord,
             cost: u32,
         }
+
+        let mut visited = Self::init_grid(from, to);
 
         let mut queue = VecDeque::with_capacity(from.len() + to.len());
         queue.push_back(CellState {
@@ -143,6 +149,12 @@ impl Assignment7 {
             let Cell {
                 possible_paths_ops, ..
             } = &cache_grid[i][j];
+
+            if visited[i][j] {
+                continue;
+            }
+
+            visited[i][j] = true;
 
             // If we have reached the end of the grid (Bottom Right), we have found the path
             if i == to.len() && j == from.len() {
