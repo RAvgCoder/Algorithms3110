@@ -87,14 +87,13 @@ fn sort(numbers: &[Int], k: usize, register_bank: &mut RegisterBank) -> Vec<Int>
         .iter()
         .enumerate()
         .map(|(i, vec)| Register(vec[0], Pos(i, 0)))
-        .collect::<Vec<_>>();
+        .collect();
 
     register_bank.re_innit(init_reg);
 
     let mut sorted_array = Vec::with_capacity(sub_array_list.len() * sub_array_list[0].len());
 
     while let Some(bank_handle) = register_bank.remove_min() {
-        assert!(sorted_array.capacity() > sorted_array.len());
         let Register(val, Pos(i, j)) = bank_handle.get();
 
         // Adds the number popped into the sorted array
